@@ -63,7 +63,7 @@ if(SAVE_FIGURES)
   axis([0 mxy(1)],[0 mxy(2)]);
   outdir='results'; 
   fmts={'eps','jpg','png','tiff'}; 
-  name=sprintf('portfolio_performance_%s',strjoin('_',symbols));
+  name=sprintf('portfolio_performance_%s',strjoin(symbols,'_'));
   mkdir(outdir);
   for fmt=fmts
     filename=sprintf('%s/%s.%s',outdir,name,fmt{:});
