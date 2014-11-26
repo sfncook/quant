@@ -7,6 +7,7 @@ notPwd = ~strcmp('..', {dirList.name});
 dirList = dirList(notPwd);
 
 symbols = {dirList.name};
+symbols = symbols';
 
 #isDir=[dirList.isdir];
 #fileNames={dirList(isDir).name};
