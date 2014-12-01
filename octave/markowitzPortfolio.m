@@ -73,9 +73,13 @@ function [weights, volatility, volatility_opt, portfolio_rreturn, rate_of_return
   for idx=1:numel(symbols)
     % retreive stock data
     ds = getStockData(symbols{idx});
-    ds2.(symbols{idx}) = ds;
-    x_close   = ds.Close(1:window_length);        % limit samples to window_length
-    X(:,idx)  = -1*diff(x_close)./x_close(2:end); % rates of return (daily)
+    %ds_fieldnames = fieldnames(ds);
+    ds_isempty = isempty(fieldnames(ds));
+    if(~ds_isempty)
+        ds2.(symbols{idx}) = ds;
+        x_close   = ds.Close(1:window_length);        % limit samples to window_length
+        X(:,idx)  = -1*diff(x_close)./x_close(2:end); % rates of return (daily)
+    end
   end
   R = corrcoef(X);      % correlation matrix of daily returns
   S = cov(X,1);         % covariance matrix of daily returns

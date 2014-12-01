@@ -35,19 +35,23 @@ function [data] = getStockData(symbol)
   fmt = '%10c,%f,%f,%f,%f,%d,%f\n';                      % CSV field pattern
   n = size(strsplit(fmt,','),2);                         % number of fields
   D = cell(n,1);                                         % temporary storage
-  for fIdx=1:n, data.(fields{fIdx}) = []; end            % initialize fields
-  while(!feof(fid))
-   [D{:},~] = fscanf(fid,fmt,'C');                         % read each line
-   data.(fields{1}){end+1} = ...
-     mktime(strptime(D{1},'%Y-%m-%d'));                    % record datetime
-   for fIdx=2:n, data.(fields{fIdx})(end+1) = D{fIdx}; end % assign fields
-  endwhile
-  % all matrix operations are defined in terms of column vectors, 
-  % so transpose
-  for fIdx=2:n, data.(fields{fIdx}) = data.(fields{fIdx})'; end
-  % convert datetime stamp to ASCII string, using system localization
-  for rIdx=2:numel(data.Date)
-    data.DateStr{rIdx} = asctime(localtime(data.Date{rIdx})); % localized date
+  if(numel(fields)==7)
+    for fIdx=1:n, data.(fields{fIdx}) = []; end            % initialize fields
+    while(!feof(fid))
+     [D{:},~] = fscanf(fid,fmt,'C');                         % read each line
+     data.(fields{1}){end+1} = ...
+       mktime(strptime(D{1},'%Y-%m-%d'));                    % record datetime
+     for fIdx=2:n, data.(fields{fIdx})(end+1) = D{fIdx}; end % assign fields
+    endwhile
+    % all matrix operations are defined in terms of column vectors,
+    % so transpose
+    for fIdx=2:n, data.(fields{fIdx}) = data.(fields{fIdx})'; end
+    % convert datetime stamp to ASCII string, using system localization
+    for rIdx=2:numel(data.Date)
+      data.DateStr{rIdx} = asctime(localtime(data.Date{rIdx})); % localized date
+    end
+  else
+    data=struct();
   end
   fclose(fid);
 end
